@@ -1,0 +1,31 @@
+{
+  "name": "rollup-plugin-import-meta-glob",
+  "version": "1.0.0",
+  "description": "Importing multiple modules from the file system via the special import.meta.glob function",
+  "main": "index.js",
+  "scripts": {
+    "test": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linsk1998/rollup-plugin-import-meta-glob.git"
+  },
+  "keywords": [
+    "rollup",
+    "vite",
+    "import",
+    "glob"
+  ],
+  "author": "linsk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linsk1998/rollup-plugin-import-meta-glob/issues"
+  },
+  "homepage": "https://github.com/linsk1998/rollup-plugin-import-meta-glob#readme",
+  "dependencies": {
+    "@rollup/pluginutils": "^3.0.4",
+    "estree-walker": "^1.0.1",
+    "fast-glob": "^3.2.7",
+    "magic-string": "^0.25.5"
+  }
+}
