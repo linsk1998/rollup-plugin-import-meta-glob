@@ -29,10 +29,19 @@ function createPlugin(options) {
 			if (!ast) {
 				return null;
 			}
+			var imports = new Set();
+			ast.body.forEach(function (node) {
+				if (node.type === 'ImportDeclaration') {
+					node.specifiers.forEach(function (specifier) {
+						imports.add(specifier.local.name);
+					});
+				}
+			});
+
 			var scope = pluginutils.attachScopes(ast, 'scope');
 			var magicString = new MagicString(code);
 			var changed = false;
-			var imports = [];
+			var newImports = [];
 
 			estreeWalker.walk(ast, {
 				enter: function enter(node, parent) {
@@ -87,8 +96,8 @@ function createPlugin(options) {
 															let importName;
 															do {
 																importName = `__glob__${seq2}_${seq1++}`;
-															} while (importName in scope.declarations);
-															imports.push([importName, path]);
+															} while (imports.has(importName) || scope.contains(importName));
+															newImports.push([importName, path]);
 															return JSON.stringify(path) + ": " + importName
 														}).join(",") + "}");
 														changed = true;
@@ -113,8 +122,8 @@ function createPlugin(options) {
 					}
 				}
 			});
-			if (imports.length) {
-				magicString.prepend(imports.map(imp => `import * as ${imp[0]} from ${JSON.stringify(imp[1])};`).join(""));
+			if (newImports.length) {
+				magicString.prepend(newImports.map(imp => `import * as ${imp[0]} from ${JSON.stringify(imp[1])};`).join(""));
 				changed = true;
 			}
 			if (!changed) {
