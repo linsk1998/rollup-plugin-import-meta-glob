@@ -1,6 +1,6 @@
 {
 	"name": "rollup-plugin-import-meta-glob",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"description": "Importing multiple modules from the file system via the special import.meta.glob function",
 	"main": "index.js",
 	"files": [
@@ -12,7 +12,7 @@
 		"registry": "https://registry.npmjs.org/"
 	},
 	"scripts": {
-		"test": "rollup -c"
+		"test": "mocha tests/**/*.test.js"
 	},
 	"repository": {
 		"type": "git",
@@ -33,10 +33,13 @@
 	"dependencies": {
 		"@rollup/pluginutils": "^4.1.2",
 		"estree-walker": "^1.0.1",
-		"fast-glob": "^3.2.7",
-		"magic-string": "^0.25.5"
+		"magic-string": "^0.25.5",
+		"tinyglobby": "^0.2.12"
 	},
 	"devDependencies": {
-		"mocha": "^11.1.0"
+		"chai": "^4.0.0",
+		"fs-extra": "^11.3.0",
+		"mocha": "^11.1.0",
+		"rollup": "3.0.0"
 	}
 }

@@ -2,7 +2,7 @@
 var estreeWalker = require('estree-walker');
 var MagicString = require('magic-string');
 var pluginutils = require('@rollup/pluginutils');
-var glob = require("fast-glob");
+var { glob, globSync } = require("tinyglobby");
 var path = require("path");
 
 function createPlugin(options) {
@@ -15,7 +15,7 @@ function createPlugin(options) {
 	var seq2 = 0;
 	return {
 		name: "import-meta-glob",
-		transform(code, id) {
+		async transform(code, id) {
 			if (!filter(id)) { return null; }
 			var ast = null;
 			try {
@@ -40,8 +40,24 @@ function createPlugin(options) {
 
 			var scope = pluginutils.attachScopes(ast, 'scope');
 			var magicString = new MagicString(code);
-			var changed = false;
-			var newImports = [];
+			var modified = false;
+			var scopeIndex = 0;
+
+			function scopeHas(name) {
+				return imports.has(name) || scope.contains(name);
+			}
+			function generateIdentifier(name) {
+				let baseName = pluginutils.makeLegalIdentifier(name);
+				let scopeName = baseName;
+				while (scopeHas(scopeName)) {
+					scopeName = `${baseName}${scopeIndex}`;
+					scopeIndex++;
+				}
+				return scopeName;
+			}
+
+			let newImports = [];
+			let globNodes = new Map();
 
 			estreeWalker.walk(ast, {
 				enter: function enter(node, parent) {
@@ -53,30 +69,18 @@ function createPlugin(options) {
 						scope = node.scope;
 					}
 					if (node.type === "CallExpression") {
-						var callee = node.callee;
+						let callee = node.callee;
 						if (callee) {
 							if (callee.type === "MemberExpression") {
-								var property = callee.property
+								let property = callee.property
 								if (property) {
 									if (property.type === "Identifier") {
 										if (property.name === "glob") {
 											let object = callee.object;
 											if (object && object.type === "MetaProperty") {
-												let arguments = node.arguments;
-												if (arguments && arguments.length) {
-													let argument1 = arguments[0];
-													if (argument1.type === "Literal") {
-														let paths = glob.sync(argument1.value, {
-															cwd: base = path.dirname(id),
-															...rest
-														});
-														magicString.overwrite(node.start, node.end, "{" + paths.map(function (path) {
-															return JSON.stringify(path) + ": function(){ return import(" + JSON.stringify(path) + ");}"
-														}).join(",") + "}");
-														changed = true;
-													} else {
-														console.error("import.meta.glob() argument should be string")
-													}
+												let args = node.arguments;
+												if (args && args.length) {
+													globNodes.set(node, args)
 												} else {
 													console.error("import.meta.glob() has no arguments")
 												}
@@ -88,8 +92,8 @@ function createPlugin(options) {
 												if (arguments && arguments.length) {
 													let argument1 = arguments[0];
 													if (argument1.type === "Literal") {
-														let paths = glob.sync(argument1.value, {
-															cwd: base = path.dirname(id),
+														let paths = globSync(argument1.value, {
+															cwd: path.dirname(id),
 															...rest
 														});
 														magicString.overwrite(node.start, node.end, "{" + paths.map(function (path) {
@@ -100,7 +104,7 @@ function createPlugin(options) {
 															newImports.push([importName, path]);
 															return JSON.stringify(path) + ": " + importName
 														}).join(",") + "}");
-														changed = true;
+														modified = true;
 													} else {
 														console.error("import.meta.globEager() argument should be string")
 													}
@@ -122,20 +126,40 @@ function createPlugin(options) {
 					}
 				}
 			});
+			for (let [node, args] of globNodes) {
+				let arg1 = args[0];
+				if (arg1.type === "Literal") {
+					let paths = await glob(arg1.value, {
+						cwd: path.dirname(id),
+						...rest
+					});
+					magicString.overwrite(
+						node.start,
+						node.end,
+						"{" + paths
+							.map(id => id.startsWith(".") ? id : "./" + id)
+							.map((id) => JSON.stringify(id) + ": function(){ return import(" + JSON.stringify(id) + ");}")
+							.join(",") +
+						"}");
+					modified = true;
+				} else {
+					console.error("import.meta.glob() argument should be string")
+				}
+			}
+
 			if (newImports.length) {
 				magicString.prepend(newImports.map(imp => `import * as ${imp[0]} from ${JSON.stringify(imp[1])};`).join(""));
-				changed = true;
+				modified = true;
 			}
-			if (!changed) {
+			if (modified) {
 				return {
-					code: code,
-					ast: ast,
+					code: magicString.toString(),
 					map: sourceMap ? magicString.generateMap({ hires: true }) : null
 				};
 			}
-
 			return {
-				code: magicString.toString(),
+				code: code,
+				ast: ast,
 				map: sourceMap ? magicString.generateMap({ hires: true }) : null
 			};
 		}
