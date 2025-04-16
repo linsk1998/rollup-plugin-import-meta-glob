@@ -1,6 +1,21 @@
 {
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit"
+	},
 	"editor.renderControlCharacters": true,
+	"editor.formatOnType": true,
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true,
 	"editor.insertSpaces": false,
+	"editor.renderWhitespace": "all",
+	"editor.wordWrap": "on",
 	"editor.tabSize": 4,
-	"editor.renderWhitespace": "all"
+	"files.insertFinalNewline": true,
+	"files.trimTrailingWhitespace": true,
+	"typescript.format.semicolons": "insert",
+	"typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+	"typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": false,
+	"json.format.keepLines": true,
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false
 }
