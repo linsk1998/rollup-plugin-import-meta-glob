@@ -48,5 +48,5 @@ Note that:
 
 - This is a Vite-only feature and is not a web or ES standard.
 - The glob patterns are treated like import specifiers: they must be relative (start with `./`).
-- The glob matching is done via `fast-glob` - check out its documentation for [supported glob patterns](https://github.com/mrmlnc/fast-glob#pattern-syntax).
+- The glob matching is done via [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
 - You should also be aware that glob imports do not accept variables, you need to directly pass the string pattern.

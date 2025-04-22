@@ -8,12 +8,24 @@ function test(title, options) {
 		var bundle = await rollup({
 			input: [
 				path.resolve(__dirname, "src/glob.js"),
+				path.resolve(__dirname, "src/eager.js"),
+				path.resolve(__dirname, "src/globEager.js"),
 			],
 			plugins: [
+				{
+					resolveId(importee, importer) {
+						if (importee.includes('?')) {
+							return {
+								id: importee,
+								external: true,
+							};
+						}
+					},
+				},
 				require("../index")(options),
 			],
 		});
-		let destPath = path.resolve(__dirname, "dest");
+		let destPath = path.resolve(__dirname, "dest-" + title);
 		let srcPath = path.resolve(__dirname, 'src');
 		if (await fs.exists(destPath)) {
 			await Promise.all(
@@ -42,5 +54,6 @@ function test(title, options) {
 }
 
 describe('rollup-plugin-import-meta-glob', function () {
-	test('glob', {});
+	test('default', {});
+	test('arrowFunction', { arrowFunction: true });
 });

@@ -1,0 +1,6 @@
+console.log({"./dir/bar.js":function(){return import("./dir/bar.js")},"./dir/foo.js":function(){return import("./dir/foo.js")}})
+console.log({"./another/c.js":function(){return import("./another/c.js")},"./another/d.js":function(){return import("./another/d.js")},"./dir/bar.js":function(){return import("./dir/bar.js")},"./dir/foo.js":function(){return import("./dir/foo.js")}})
+console.log({"./dir/foo.js":function(){return import("./dir/foo.js")}})
+console.log({"./dir/bar.js":function(){return import("./dir/bar.js").then(function(m){return m.setup})},"./dir/foo.js":function(){return import("./dir/foo.js").then(function(m){return m.setup})}})
+console.log({"./dir/bar.js?url":function(){return import("./dir/bar.js?url")},"./dir/foo.js?url":function(){return import("./dir/foo.js?url")}})
+console.log({"./dir/bar.js?foo=bar&bar=true":function(){return import("./dir/bar.js?foo=bar&bar=true")},"./dir/foo.js?foo=bar&bar=true":function(){return import("./dir/foo.js?foo=bar&bar=true")}})

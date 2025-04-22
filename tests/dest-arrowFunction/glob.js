@@ -1,0 +1,6 @@
+console.log({"./dir/bar.js": ()=>import("./dir/bar.js"),"./dir/foo.js": ()=>import("./dir/foo.js")})
+console.log({"./another/c.js": ()=>import("./another/c.js"),"./another/d.js": ()=>import("./another/d.js"),"./dir/bar.js": ()=>import("./dir/bar.js"),"./dir/foo.js": ()=>import("./dir/foo.js")})
+console.log({"./dir/foo.js": ()=>import("./dir/foo.js")})
+console.log({"./dir/bar.js": ()=>import("./dir/bar.js").then(m=>m.setup),"./dir/foo.js": ()=>import("./dir/foo.js").then(m=>m.setup)})
+console.log({"./dir/bar.js?url": ()=>import("./dir/bar.js?url"),"./dir/foo.js?url": ()=>import("./dir/foo.js?url")})
+console.log({"./dir/bar.js?foo=bar&bar=true": ()=>import("./dir/bar.js?foo=bar&bar=true"),"./dir/foo.js?foo=bar&bar=true": ()=>import("./dir/foo.js?foo=bar&bar=true")})

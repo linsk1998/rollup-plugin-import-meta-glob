@@ -1,1 +1,6 @@
-console.log(import.meta.glob("./deps/*.js"))
+console.log(import.meta.glob("./dir/*.js"))
+console.log(import.meta.glob(['./dir/*.js', './another/*.js']))
+console.log(import.meta.glob(['./dir/*.js', '!**/bar.js']))
+console.log(import.meta.glob('./dir/*.js', { import: 'setup' }))
+console.log(import.meta.glob("./dir/*.js", { query: "?url" }))
+console.log(import.meta.glob("./dir/*.js", { query: { foo: 'bar', bar: true } }))
