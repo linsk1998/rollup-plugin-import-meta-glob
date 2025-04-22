@@ -1,5 +1,9 @@
 ## Glob Import
 
+[![npm](https://img.shields.io/npm/v/rollup-plugin-import-meta-glob)](https://www.npmjs.com/package/rollup-plugin-import-meta-glob)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CI Status](https://github.com/linsk1998/rollup-plugin-import-meta-glob/actions/workflows/ci.yml/badge.svg)](https://github.com/linsk1998/rollup-plugin-import-meta-glob/actions)
+
 Vite supports importing multiple modules from the file system via the special `import.meta.glob` function:
 
 ```js
