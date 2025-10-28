@@ -168,7 +168,8 @@ function createPlugin(options) {
 			}
 			return {
 				code: code,
-				ast: ast
+				ast: ast,
+				map: null
 			};
 		}
 	};
