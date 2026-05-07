@@ -166,10 +166,6 @@ function createPlugin(options) {
 					map: sourceMap ? magicString.generateMap({ hires: true }) : null
 				};
 			}
-			return {
-				code: code,
-				ast: ast
-			};
 		}
 	};
 }
